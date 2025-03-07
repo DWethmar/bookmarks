@@ -53,13 +53,13 @@ type loadLibraryOptions struct {
 	DBName  string
 }
 
-// loadLibrary loads a library.
-func loadLibrary(o loadLibraryOptions) (*bookmark.Library, error) {
+// setupBookmarks loads a library.
+func setupBookmarks(o loadLibraryOptions) (*bookmark.Library, error) {
 	logger := Logger(o.Verbose)
 	workDir := ConfigDir(runtime.GOOS, appName)
 	// make sure the workdir exists
 	if err := os.MkdirAll(workDir, 0755); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not create workdir: %w", err)
 	}
 	logger.Debug(
 		"workDir",
@@ -69,6 +69,5 @@ func loadLibrary(o loadLibraryOptions) (*bookmark.Library, error) {
 		slog.String("dbName", o.DBName),
 	)
 	store := json.NewStore(path.Join(workDir, fmt.Sprintf("%s.json", o.DBName)))
-	l := bookmark.NewLibrary(logger, store)
-	return l, nil
+	return bookmark.NewLibrary(logger, store), nil
 }

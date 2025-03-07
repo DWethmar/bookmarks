@@ -12,7 +12,7 @@ import (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "add a bookmark",
+	Short: "Add a bookmark",
 	Long:  "Add a bookmark to the bookmark manager",
 	RunE:  runAddCmd,
 }
@@ -33,7 +33,7 @@ func runAddCmd(cmd *cobra.Command, args []string) error {
 		Content:   content,
 		CreatedAt: time.Now(),
 	}
-	lib, err := loadLibrary(loadLibraryOptions{
+	lib, err := setupBookmarks(loadLibraryOptions{
 		Verbose: cmd.Flag("verbose").Changed,
 		DBName:  appName,
 	})

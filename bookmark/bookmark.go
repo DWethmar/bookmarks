@@ -2,6 +2,7 @@ package bookmark
 
 import (
 	"log/slog"
+	"strings"
 	"time"
 )
 
@@ -40,6 +41,21 @@ func (l *Library) Add(b *Bookmark) error {
 // List lists all bookmarks in the library.
 func (l *Library) List() ([]*Bookmark, error) {
 	return l.store.List()
+}
+
+// Search searches for bookmarks in the library.
+func (l *Library) Search(query string) ([]*Bookmark, error) {
+	bookmarks, err := l.store.List()
+	if err != nil {
+		return nil, err
+	}
+	var results []*Bookmark
+	for _, b := range bookmarks {
+		if strings.Contains(b.Title, query) || strings.Contains(b.Content, query) {
+			results = append(results, b)
+		}
+	}
+	return results, nil
 }
 
 // Delete deletes a bookmark from the library.

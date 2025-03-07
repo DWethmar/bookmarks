@@ -13,6 +13,11 @@ add bookmark:
 go run . add -n "My favorite website" denniswethmar.nl
 ```
 
+search bookmarks:
+```bash
+go run . -s .nl
+```
+
 list entries:
 ```bash
 go run . ls
