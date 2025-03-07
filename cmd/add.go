@@ -19,7 +19,7 @@ var addCmd = &cobra.Command{
 
 // runAddCmd represents the command to run when the add command is specified
 func runAddCmd(cmd *cobra.Command, args []string) error {
-	name, err := cmd.Flags().GetString("name")
+	title, err := cmd.Flags().GetString("title")
 	if err != nil {
 		return fmt.Errorf("failed to get name flag: %w", err)
 	}
@@ -29,7 +29,7 @@ func runAddCmd(cmd *cobra.Command, args []string) error {
 	content := args[0]
 	// create bookmark
 	b := &bookmark.Bookmark{
-		Title:     name,
+		Title:     title,
 		Content:   content,
 		CreatedAt: time.Now(),
 	}
@@ -40,7 +40,7 @@ func runAddCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if err = lib.Add(b); err != nil {
+	if err = lib.Add(cmd.Context(), b); err != nil {
 		return fmt.Errorf("failed to add bookmark: %w", err)
 	}
 	return nil
@@ -48,5 +48,5 @@ func runAddCmd(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-	addCmd.Flags().StringP("name", "n", "", "name of the bookmark")
+	addCmd.Flags().StringP("title", "t", "", "title of the bookmark")
 }

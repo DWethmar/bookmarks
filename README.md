@@ -10,8 +10,9 @@ The current implementation stores bookmarks to a json file in your home folder: 
 
 add bookmark:
 ```bash
-go run . add -n "My favorite website" denniswethmar.nl
+go run . add -t "My favorite website" denniswethmar.nl
 ```
+if no title is provided then the url will be queried for an title.
 
 search bookmarks:
 ```bash

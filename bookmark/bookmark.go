@@ -1,7 +1,9 @@
 package bookmark
 
 import (
+	"context"
 	"log/slog"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -24,17 +26,26 @@ type Store interface {
 type Library struct {
 	logger *slog.Logger
 	store  Store
+	client *http.Client
 }
 
 func NewLibrary(logger *slog.Logger, store Store) *Library {
 	return &Library{
 		logger: logger,
 		store:  store,
+		client: &http.Client{},
 	}
 }
 
 // Add adds a bookmark to the library.
-func (l *Library) Add(b *Bookmark) error {
+func (l *Library) Add(ctx context.Context, b *Bookmark) error {
+	if b.Title == "" && isURL(b.Content) {
+		title, err := FetchTitle(ctx, l.client, b.Content)
+		if err != nil {
+			return err
+		}
+		b.Title = title
+	}
 	return l.store.Add(b)
 }
 
@@ -61,4 +72,9 @@ func (l *Library) Search(query string) ([]*Bookmark, error) {
 // Delete deletes a bookmark from the library.
 func (l *Library) Delete(title string) error {
 	return l.store.Delete(title)
+}
+
+// isURL checks if a string is a URL.
+func isURL(s string) bool {
+	return strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://")
 }
